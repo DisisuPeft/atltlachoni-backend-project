@@ -47,5 +47,6 @@ class RoleModelViewSet(viewsets.ModelViewSet):
     
     def get_queryset(self):
         qs = super().get_queryset()
-        qs = qs.exclude(nombre__in=["Estudiante", "Docente"])
+        if not self.request.user.is_superuser:
+            qs = qs.exclude(nombre__in=["Estudiante", "Docente"])
         return qs

@@ -64,6 +64,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
                     response.data = {
                         "detail": "Se produjo un detail en la solicitud. Por favor, revisa los datos enviados."
                     }
+
             return response
             # return Response({"message": "SignIn exitoso."})
         except Exception as e:

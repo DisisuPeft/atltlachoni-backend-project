@@ -1,12 +1,12 @@
 from django.db import models
 from common.models import Base, OwnerBaseModel, BaseFileEntity, SoftDeleteModel
+import uuid
 
 class TipoPrograma(Base, OwnerBaseModel):
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True, null=True)
     
-    
-    
+        
 class ModalidadesPrograma(Base, OwnerBaseModel, SoftDeleteModel):
     name = models.CharField(max_length=50)
     descripcion = models.TextField(blank=True, null=True)
@@ -30,7 +30,7 @@ class ProgramaEducativo(Base, OwnerBaseModel, SoftDeleteModel):
     modalidad = models.ForeignKey(ModalidadesPrograma, on_delete=models.CASCADE, related_name="programas", null=True, blank=True)
     imagen_url = models.CharField(max_length=255, null=True, blank=True)
     banner_url = models.CharField(max_length=255, null=True, blank=True)
-
+    ref = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
 
 class Inscripcion(Base, OwnerBaseModel, SoftDeleteModel):

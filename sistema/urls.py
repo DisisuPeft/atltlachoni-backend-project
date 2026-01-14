@@ -1,9 +1,10 @@
 from django.urls import path, include
-from .views import GetPestaniaUsuario
+from .views import GetPestaniaUsuario, GetEmpresaView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 
 urlpatterns = [
     path('sistema/pestanias/', GetPestaniaUsuario.as_view(), name="get"),
+    path('sistema/empresa/', GetEmpresaView.as_view(), name="get"),
 ]
