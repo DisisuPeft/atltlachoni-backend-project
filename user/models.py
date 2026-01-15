@@ -82,6 +82,7 @@ class EstudiantePerfil(BaseAcademico):
     especialidad = models.CharField(max_length=50, null=True, blank=True)
     matricula = models.CharField(max_length=50, null=True, blank=True, unique=True)
     fecha_ingreso = models.DateField(null=True, blank=True)
+    ref = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
 
     class Meta:
         db_table = "estudiante_perfil"

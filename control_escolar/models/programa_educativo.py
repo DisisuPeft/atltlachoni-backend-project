@@ -37,6 +37,7 @@ class Inscripcion(Base, OwnerBaseModel, SoftDeleteModel):
     estudiante = models.ForeignKey('user.EstudiantePerfil', on_delete=models.CASCADE, related_name="inscripcion")
     campania = models.ForeignKey('control_escolar.Campania', on_delete=models.CASCADE, related_name="inscripciones")
     fecha_inscripcion = models.DateField(auto_now_add=True)
+    # estdo 0
     estado = models.IntegerField(default=0) 
     costo_inscripcion_acordado = models.DecimalField(
         max_digits=10, 

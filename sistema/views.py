@@ -31,10 +31,10 @@ class GetEmpresaView(APIView):
 
     def get(self, request, *args, **kwargs):
         slug = request.query_params.get("slug")
-        empresa = Empresa.objects.filter(slug=slug).first()
+        empresa = Empresa.objects.filter(slug=slug)
         if not empresa:
             return Response("No existen empresas, se debe definir una.", status=status.HTTP_404_NOT_FOUND)
 
-        serializer = EmpresaSerializer(empresa)
+        serializer = EmpresaSerializer(empresa, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)

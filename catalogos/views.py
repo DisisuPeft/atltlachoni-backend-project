@@ -1,10 +1,9 @@
-from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.views import APIView
-from catalogos.models import Genero, Institucion
+from catalogos.models import Genero, Institucion, NivelEducativo, EstadoPais, Localidad
 from user.permission import EsAutorORolPermitido, HasRoleWithRoles
 from rest_framework.permissions import IsAuthenticated
-from catalogos.serializers import GeneroSerializer, InstitucionUnidadSerializer, InstitucionesSerializer
+from catalogos.serializers import GeneroSerializer, InstitucionUnidadSerializer, InstitucionesSerializer, NivelEducativoSerializer, EstadoPaisSerializer, LocalidadSerializer
 from user.authenticate import CustomJWTAuthentication
 from rest_framework.response import Response
 from rest_framework import status
@@ -57,4 +56,40 @@ class InstitutosView(APIView):
         
         serializer = InstitucionUnidadSerializer(institutos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
+
+
+class NivelEducativoView(APIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated, HasRoleWithRoles(["Administrador", "Vendedor"]), EsAutorORolPermitido]
+
+    def get(self, request, *args, **kwargs):
+        nivel = NivelEducativo.objects.all()
+        if not nivel:
+            return Response("No existen registros de niveles educativos", status=status.HTTP_404_NOT_FOUND)
+
+        serializer = NivelEducativoSerializer(nivel, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class EstadosPaisView(APIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated, HasRoleWithRoles(["Administrador"]), EsAutorORolPermitido]
+
+    def get(self, request, *args, **kwargs):
+        estados = EstadoPais.objects.all()
+        if not estados:
+            return Response("No existen estados.", status=status.HTTP_404_NOT_FOUND)
+        serializer = EstadoPaisSerializer(estados, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+class LocalidadView(APIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated, HasRoleWithRoles(["Administrador"]), EsAutorORolPermitido]
+
+    def get(self, request, *args, **kwargs):
+        estado = request.query_params.get('estado')
+        localidades = Localidad.objects.filter(country__id=estado)
+        if not localidades:
+            return Response("No existen localidades relacionadas a ese estado.", status=status.HTTP_404_NOT_FOUND)
+        serializer = LocalidadSerializer(localidades, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

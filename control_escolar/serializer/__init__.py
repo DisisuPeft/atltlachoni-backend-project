@@ -1,1 +1,2 @@
 from .programa_educativo import ProgramaEducativoSerializer
+from .estudiante_perfil import EstudiantePerfilSerializer

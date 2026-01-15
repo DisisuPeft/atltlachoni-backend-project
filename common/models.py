@@ -206,7 +206,7 @@ class BaseAcademico(Base):
     nivel_educativo = models.ForeignKey('catalogos.NivelEducativo', on_delete=models.CASCADE, related_name='%(app_label)s_%(class)s_nivel', null=True, blank=True)
     institucion = models.ForeignKey('catalogos.Institucion', on_delete=models.CASCADE, related_name='%(app_label)s_%(class)s_institucion', null=True, blank=True)
     estado_pais = models.ForeignKey("catalogos.EstadoPais", on_delete=models.CASCADE, related_name="%(app_label)s_%(class)s_estado_pais", null=True, blank=True)
-    ciudad = models.ForeignKey("catalogos.Ciudad", on_delete=models.CASCADE, related_name="%(app_label)s_%(class)s_ciudad", null=True, blank=True)
+    ciudad = models.ForeignKey("catalogos.Localidad", on_delete=models.CASCADE, related_name="%(app_label)s_%(class)s_ciudad", null=True, blank=True)
 
     class Meta:
         abstract = True
