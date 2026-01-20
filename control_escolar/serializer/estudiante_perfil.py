@@ -15,8 +15,8 @@ class EstudiantePerfilSerializer(serializers.ModelSerializer):
 
     # def create(self, validated_data):
     #     user = validated_data.pop('user')
-    #
-    #     estudiante_perfil = EstudiantePerfil.objects.create(**validated_data)
+        # role
+        # estudiante_perfil = EstudiantePerfil.objects.create(**validated_data)
 
     def get_niv_educativo(self, obj):
         return obj.nivel_educativo.nombre if obj.nivel_educativo else None

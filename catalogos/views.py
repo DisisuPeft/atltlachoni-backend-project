@@ -88,7 +88,7 @@ class LocalidadView(APIView):
 
     def get(self, request, *args, **kwargs):
         estado = request.query_params.get('estado')
-        localidades = Localidad.objects.filter(country__id=estado)
+        localidades = Localidad.objects.filter(country__id=estado).order_by('name')
         if not localidades:
             return Response("No existen localidades relacionadas a ese estado.", status=status.HTTP_404_NOT_FOUND)
         serializer = LocalidadSerializer(localidades, many=True)
