@@ -18,10 +18,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             'password': attrs.get('password')
         }
         user = authenticate(**credentials)
+
         if user: 
-            if not user.is_active:
+            if user.status == 0:
                 raise exceptions.AuthenticationFailed('User is deactivated')
 
+        return super().validate(attrs)
 
 class MeSerializer(serializers.ModelSerializer):
     modulos_accesibles = serializers.SerializerMethodField()
@@ -68,6 +70,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("uuid", "nombre", "apellido_paterno", "apellido_materno", "genero",  "genero_name", "edad", "fecha_nacimiento", "telefono", "email", "status", "password", "roles_list", "roles")
         extra_kwargs = {
             'password': {'write_only': True}
+
         }
     
     def create(self, validated_data):
@@ -115,3 +118,10 @@ class RoleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Role
         fields = ("id", "nombre")
+
+
+class UserSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("uuid", "nombre", "apellido_paterno", "apellido_materno", "genero", "edad",
+              "fecha_nacimiento", "telefono", "email", "status")

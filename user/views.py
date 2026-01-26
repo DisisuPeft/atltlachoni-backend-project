@@ -1,10 +1,5 @@
-from django.shortcuts import render
-from contextvars import Token
 
-from user.manager import CustomUserManager
-from user.models import UserCustomize as User
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from user.serializers import MeSerializer
 from rest_framework import generics, status
@@ -19,11 +14,12 @@ from django.conf import settings
 from rest_framework.views import APIView
 from core.permissions import HasRoleWithRoles
 from user.authenticate import CustomJWTAuthentication
-
+from user.serializers import CustomTokenObtainPairSerializer
 # Create your views here.
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     permission_classes = [AllowAny]
+    serializer_class = CustomTokenObtainPairSerializer
 
     def post(self, request, *args, **kwargs):
         # print("Datos de la solicitud:", request.data)
@@ -71,7 +67,7 @@ class CustomTokenObtainPairView(TokenObtainPairView):
             print(f"Excepción capturada: {e}")
             return Response(
                 {
-                    "detail": "Ocurrió un error al autenticar el usuario, verifica tu informacion"
+                    "detail": f"{e}"
                 },
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

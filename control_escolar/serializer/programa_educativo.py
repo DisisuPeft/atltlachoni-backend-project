@@ -1,7 +1,18 @@
 from rest_framework import serializers
-from control_escolar.models import SubModuloEducativo, ModuloEducativo, ProgramaEducativo
+from control_escolar.models import SubModuloEducativo, ModuloEducativo, ProgramaEducativo, ModalidadesPrograma, TipoPrograma
 from user.models import MaestroPerfil
 from django.db import transaction
+
+class ModalidadesProgramaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ModalidadesPrograma
+        fields = ["id", "nombre"]
+
+
+class TipoPogramaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TipoPrograma
+        fields = ["id", "nombre"]
 
 class SubModuloEducativoSerializer(serializers.ModelSerializer):
     class Meta:
@@ -28,6 +39,9 @@ class ModuloEducativoSerializer(serializers.ModelSerializer):
             "creditos",
             "submodulos",
         ]
+        # extra_kwargs = {
+        #     'submodulos': {'write_only': True},
+        # }
     @transaction.atomic
     def create(self, validated_data):
         submodulos_data = validated_data.pop("submodulos", [])
@@ -60,17 +74,21 @@ class ModuloEducativoSerializer(serializers.ModelSerializer):
         return instance
     
 class ProgramaEducativoSerializer(serializers.ModelSerializer):
-    modulos = ModuloEducativoSerializer(many=True)
+    modulos_obj = serializers.SerializerMethodField()
     instructor = serializers.PrimaryKeyRelatedField(
         many=True,
         required=False,
         queryset=MaestroPerfil.objects.all()
     )
 
+    institucion_nombre = serializers.SerializerMethodField()
+    tipo_nombre = serializers.SerializerMethodField()
+    modalidad_nombre = serializers.SerializerMethodField()
+
+
     class Meta:
         model = ProgramaEducativo
-        fields = [
-            "id",
+        fields = (
             "ref",
             "nombre",
             "descripcion",
@@ -89,8 +107,15 @@ class ProgramaEducativoSerializer(serializers.ModelSerializer):
             "imagen_url",
             "banner_url",
             "modulos",
-        ]
+            "modulos_obj",
+            "institucion_nombre",
+            "tipo_nombre",
+            "modalidad_nombre"
+        )
         read_only_fields = ["ref"]
+        extra_kwargs = {
+
+        }
     @transaction.atomic
     def create(self, validated_data):
         modulos_data = validated_data.pop("modulos", [])
@@ -145,3 +170,24 @@ class ProgramaEducativoSerializer(serializers.ModelSerializer):
                 )
 
         return instance
+
+    def get_institucion_nombre(self, obj):
+        return obj.institucion.nombre if obj.institucion else None
+
+    def get_modalidad_nombre(self, obj):
+        return obj.modalidad.name if obj.modalidad else None
+        # return "nombre"
+
+    def get_tipo_nombre(self, obj):
+        return obj.tipo.nombre if obj.tipo else None
+
+    def get_modulos_obj(self, obj):
+        modulos = obj.modulos.all()
+
+        return ModuloEducativoSerializer(modulos, many=True).data
+
+
+class ProgramaEducativoSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProgramaEducativo
+        fields = ("id", "nombre")

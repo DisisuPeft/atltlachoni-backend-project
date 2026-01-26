@@ -1,1 +1,3 @@
-from .programas_educativos import ProgramaEductiavoModelViewSet
+from .programas_educativos import ProgramaEductiavoModelViewSet, ProgramaEducativoGenericoView
+from .alumnos import EstudiantePerfilViewSet
+from .campanias import CampaniaModelViewSet
