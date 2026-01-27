@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework.views import APIView
 from user.authenticate import CustomJWTAuthentication
 from user.permission import HasRoleWithRoles, EsAutorORolPermitido
@@ -7,6 +6,7 @@ from control_escolar.serializers import ModalidadesSimpleSerializer, TipoProgram
 from control_escolar.models import ModalidadesPrograma, TipoPrograma
 from rest_framework.response import Response
 from rest_framework import status
+from control_escolar.services.repositories import CampaniaRepositoryService
 # Create your views here.
 
 class ModalidadesView(APIView):
@@ -34,3 +34,12 @@ class TipoProgramaView(APIView):
         serializer = TipoProgramaSimpleSerializer(tipos, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CampaniaView(APIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated, HasRoleWithRoles(['Administrador']), EsAutorORolPermitido]
+
+    def get(self, request, *args, **kwargs):
+        campania = CampaniaRepositoryService.get_campania()
+        return Response(campania, status=status.HTTP_200_OK)

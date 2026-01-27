@@ -1,3 +1,5 @@
 from .programa_educativo import ProgramaEducativoSerializer, ProgramaEducativoSimpleSerializer
 from .estudiante_perfil import EstudiantePerfilSerializer
 from .campania import CampaniaSerializer
+from .pagos import TipoPagoSimpleSerializer, PagoSerializer
+from .inscripciones import InscripcionSerializer

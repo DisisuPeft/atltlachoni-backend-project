@@ -1,0 +1,1 @@
+from .campania import CampaniaRepositoryService

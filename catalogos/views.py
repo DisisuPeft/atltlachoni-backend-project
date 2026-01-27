@@ -1,9 +1,10 @@
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from rest_framework.views import APIView
-from catalogos.models import Genero, Institucion, NivelEducativo, EstadoPais, Localidad
+from catalogos.models import Genero, Institucion, NivelEducativo, EstadoPais, Localidad, MetodoPago
 from user.permission import EsAutorORolPermitido, HasRoleWithRoles
 from rest_framework.permissions import IsAuthenticated
-from catalogos.serializers import GeneroSerializer, InstitucionUnidadSerializer, InstitucionesSerializer, NivelEducativoSerializer, EstadoPaisSerializer, LocalidadSerializer
+from catalogos.serializers import GeneroSerializer, InstitucionUnidadSerializer, InstitucionesSerializer, \
+    NivelEducativoSerializer, EstadoPaisSerializer, LocalidadSerializer, MetodoPagoSerializer
 from user.authenticate import CustomJWTAuthentication
 from rest_framework.response import Response
 from rest_framework import status
@@ -92,4 +93,18 @@ class LocalidadView(APIView):
         if not localidades:
             return Response("No existen localidades relacionadas a ese estado.", status=status.HTTP_404_NOT_FOUND)
         serializer = LocalidadSerializer(localidades, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MetodoPagoView(APIView):
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated, HasRoleWithRoles(["Administrador"]), EsAutorORolPermitido]
+
+    def get(self, request, *args, **kwargs):
+        metodo_pago = MetodoPago.objects.filter(status=1)
+
+        if not metodo_pago:
+            return Response({"detail": "No se encontraron metodos de pago"}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = MetodoPagoSerializer(metodo_pago, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
