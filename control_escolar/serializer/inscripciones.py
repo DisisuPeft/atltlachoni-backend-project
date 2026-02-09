@@ -6,7 +6,6 @@ class InscripcionSerializer(serializers.ModelSerializer):
     pagos = serializers.SerializerMethodField()
     estudiante_obj = serializers.SerializerMethodField()
     campania_obj = serializers.SerializerMethodField()
-
     # Campos para precios personalizados (opcionales)
     tiene_precio_custom = serializers.BooleanField(required=False, default=False)
     costo_inscripcion_acordado = serializers.DecimalField(
@@ -36,16 +35,20 @@ class InscripcionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Inscripcion
         fields = (
-            'id', 'fecha_inscripcion', 'estudiante', 'campania_programa',
-            'pagos', 'estudiante_r', 'campania_programa_r',
+            'id', 'fecha_inscripcion', 'estudiante', 'campania',
+            'pagos', 'estudiante_obj', 'campania_obj',
             'tiene_precio_custom', 'costo_inscripcion_acordado',
             'costo_mensualidad_acordado', 'costo_documentacion_acordado',
             'notas_precio_custom', 'notas_precio_custom'
         )
         read_only_fields = [
             "pagos",
-            'estudiante_r', 'campania_r'
+            'estudiante_obj', 'campania_obj'
         ]
+        extra_kwargs = {
+            'campania': {'write_only': True, 'required': False},
+            'estudiante': {'write_only': True, 'required': False},
+        }
 
     @transaction.atomic
     def create(self, validated_data):
@@ -64,7 +67,7 @@ class InscripcionSerializer(serializers.ModelSerializer):
     #
     def get_campania_obj(self, obj):
         from control_escolar.serializer import CampaniaSerializer
-        c = getattr(obj, "campania_programa", None)
+        c = getattr(obj, "campania", None)
         if not c:
             return None
         return CampaniaSerializer(c, many=False).data

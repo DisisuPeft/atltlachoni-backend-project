@@ -6,8 +6,8 @@ from django.utils import timezone
 class PagoService:
     def __init__(self, inscripcion):
         self.inscripcion = inscripcion
-        self.programa = inscripcion.campania_programa.programa
-        self.duracion_meses = inscripcion.campania_programa.programa.duracion_meses
+        self.programa = inscripcion.campania.programa
+        self.duracion_meses = inscripcion.campania.programa.duracion_meses
 
     def obtener_costos_reales(self):
         """Obtiene los costos considerando precios custom si existen"""

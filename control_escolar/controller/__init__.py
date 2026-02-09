@@ -2,3 +2,4 @@ from .programas_educativos import ProgramaEductiavoModelViewSet, ProgramaEducati
 from .alumnos import EstudiantePerfilViewSet
 from .campanias import CampaniaModelViewSet
 from .pago import TipoPagoView
+from .inscripcion import InscripcionModelViewSet

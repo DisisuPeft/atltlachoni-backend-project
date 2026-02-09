@@ -6,7 +6,7 @@ from control_escolar.serializers import ModalidadesSimpleSerializer, TipoProgram
 from control_escolar.models import ModalidadesPrograma, TipoPrograma
 from rest_framework.response import Response
 from rest_framework import status
-from control_escolar.services.repositories import CampaniaRepositoryService
+from core.repositories import CampaniaRepositoryService
 # Create your views here.
 
 class ModalidadesView(APIView):
