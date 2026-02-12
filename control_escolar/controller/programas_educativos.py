@@ -47,6 +47,13 @@ class ProgramaEductiavoModelViewSet(ModelViewSet):
             return Response(programas.count(), status=status.HTTP_200_OK)
         return Response(programas.count(), status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated, HasRoleWithRoles(["Estudiante"])])
+    def programa_estudiante(self, request, ref=None):
+        programa = self.get_object()
+        serializer = self.get_serializer(programa)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class ProgramaEducativoGenericoView(APIView):
     authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated, EsAutorORolPermitido, HasRoleWithRoles(["Administrador"])]

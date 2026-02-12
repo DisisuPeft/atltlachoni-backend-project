@@ -12,6 +12,7 @@ from user.models import EstudiantePerfil
 from core.services import PagoService
 from django.db import transaction
 from rest_framework.decorators import action
+from control_escolar.serializer import ModuloEducativoSerializer
 
 
 class InscripcionModelViewSet(ModelViewSet):
@@ -109,7 +110,9 @@ class InscripcionModelViewSet(ModelViewSet):
                     'nombre': i.campania.programa.nombre,
                     'tipo': i.campania.programa.tipo.nombre,
                     'banner_url': i.campania.programa.banner_url,
-                    'imagen_url': i.campania.programa.imagen_url
+                    'imagen_url': i.campania.programa.imagen_url,
+                    'duracion': i.campania.programa.duracion_meses,
+                    'modulos': ModuloEducativoSerializer(i.campania.programa.modulos, many=True).data,
                 } for i in estudiante_inscripcion
             ]
         })
