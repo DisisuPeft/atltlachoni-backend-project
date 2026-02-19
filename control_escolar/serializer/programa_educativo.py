@@ -80,11 +80,15 @@ class ProgramaEducativoSerializer(serializers.ModelSerializer):
         required=False,
         queryset=MaestroPerfil.objects.all()
     )
-
+    modulos = ModuloEducativoSerializer(
+        many=True,
+        write_only=True,
+        required=False
+    )
     institucion_nombre = serializers.SerializerMethodField()
     tipo_nombre = serializers.SerializerMethodField()
     modalidad_nombre = serializers.SerializerMethodField()
-
+    # modulos = serializers.DictField()
 
     class Meta:
         model = ProgramaEducativo
@@ -132,7 +136,7 @@ class ProgramaEducativoSerializer(serializers.ModelSerializer):
                 programa=programa,
                 **modulo_data
             )
-
+            print(modulo)
             for submodulo_data in submodulos_data:
                 SubModuloEducativo.objects.create(
                     modulo=modulo,
