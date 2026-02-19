@@ -5,11 +5,12 @@ from rest_framework.viewsets import ModelViewSet
 from user.authenticate import CustomJWTAuthentication
 from user.permission import HasRoleWithRoles, EsAutorORolPermitido
 from rest_framework.permissions import IsAuthenticated
-from control_escolar.serializer import ProgramaEducativoSerializer, ProgramaEducativoSimpleSerializer
+from control_escolar.serializer import ProgramaEducativoSerializer, ProgramaEducativoSimpleSerializer, ModuloEducativoSerializer
 from control_escolar.models import ProgramaEducativo
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
+from control_escolar.models import ModuloEducativo
 
 
 class ProgramaEductiavoModelViewSet(ModelViewSet):
@@ -52,6 +53,18 @@ class ProgramaEductiavoModelViewSet(ModelViewSet):
         programa = self.get_object()
         serializer = self.get_serializer(programa)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated, HasRoleWithRoles(["Estudiante", "Administrador"])])
+    def modulos(self, request, ref=None):
+        modulo_id = request.query_params.get('modulo')
+        programa = self.get_object()
+
+        modulo = ModuloEducativo.objects.filter(programa=programa, pk=modulo_id).first()
+
+        if not modulo:
+            return Response({'detail': 'No existe el modulo'}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(ModuloEducativoSerializer(modulo).data, status=status.HTTP_200_OK)
 
 
 class ProgramaEducativoGenericoView(APIView):
