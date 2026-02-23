@@ -103,9 +103,6 @@ class Validacion(BaseCRM):
 
 
 class ComprobanteValidacion(BaseFileEntity):
-    """
-    Comprobante de pago para validación de inscripción inicial.
-    """
     validacion = models.ForeignKey(
         'crm.Validacion',
         on_delete=models.CASCADE,
