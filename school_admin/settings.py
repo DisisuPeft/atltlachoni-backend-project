@@ -155,8 +155,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "thales_api",
-        "USER": "root",
-        "PASSWORD": "",
+        "USER": "admin",
+        "PASSWORD": "@dm1n2026",
         "HOST": "localhost",
         "PORT": "3306",
     }
