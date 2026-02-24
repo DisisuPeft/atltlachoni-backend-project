@@ -34,7 +34,7 @@ class MeSerializer(serializers.ModelSerializer):
         fields = ("uuid","email", 'nombre_completo', 'modulos_accesibles')
         
     def get_nombre_completo(self, obj):
-        return f"{obj.nombre} {obj.apellido_paterno} {obj.apellido_materno}" if obj.nombre and obj.apellido_paterno and obj.apellido_materno else ""
+        return f"{obj.nombre} {obj.apellido_paterno} {obj.apellido_materno}" if obj.nombre and obj.apellido_paterno or obj.apellido_materno else ""
         
     def get_modulos_accesibles(self, obj):
         from sistema.serializers import ModulosSerializer

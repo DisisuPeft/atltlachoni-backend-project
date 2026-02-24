@@ -82,14 +82,18 @@ class BaseFileEntity(Base):
         upload_to=generic_upload_path,  # ← Función genérica por defecto
         max_length=500,
         verbose_name="Archivo",
-        help_text="Archivo físico almacenado"
+        help_text="Archivo físico almacenado",
+        # null=True,
+        # blank=True
     )
 
     # ========== METADATA BÁSICA ==========
     original_name = models.CharField(
         max_length=500,
         verbose_name="Nombre original",
-        help_text="Nombre original del archivo al momento de subirlo"
+        help_text="Nombre original del archivo al momento de subirlo",
+        null = True,
+        blank = True
     )
 
     mime_type = models.CharField(

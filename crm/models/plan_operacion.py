@@ -103,9 +103,6 @@ class Validacion(BaseCRM):
 
 
 class ComprobanteValidacion(BaseFileEntity):
-    """
-    Comprobante de pago para validación de inscripción inicial.
-    """
     validacion = models.ForeignKey(
         'crm.Validacion',
         on_delete=models.CASCADE,
@@ -141,6 +138,59 @@ class ComprobanteValidacion(BaseFileEntity):
     def __str__(self):
         return f"Comprobante {self.validacion.id} - {self.original_name}"
 
+
+class ConversionTracking(models.Model):
+    lead = models.OneToOneField(
+        "crm.Lead",
+        on_delete=models.PROTECT,
+        related_name='conversion'
+    )
+    vendedor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name='conversiones'
+    )
+    plan_pago = models.ForeignKey(
+        PlanPago,
+        on_delete=models.PROTECT,
+        related_name='conversiones'
+    )
+    validacion = models.ForeignKey(
+        Validacion,
+        on_delete=models.PROTECT,
+        related_name='conversiones'
+    )
+
+    # Destino Control Escolar
+    estudiante = models.ForeignKey(
+        'user.EstudiantePerfil',
+        on_delete=models.PROTECT,
+        related_name='conversion_origen'
+    )
+    inscripcion = models.ForeignKey(
+        'control_escolar.Inscripcion',
+        on_delete=models.PROTECT,
+        related_name='conversion_origen'
+    )
+
+    # Metadata conversión
+    fecha_conversion = models.DateTimeField(auto_now_add=True)
+    tiempo_cierre = models.DurationField(
+        help_text="Tiempo desde creación de lead hasta conversión"
+    )
+
+    # Métricas
+    valor_venta = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        help_text="Valor total del plan de pago"
+    )
+    comision_vendedor = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True
+    )
 
 # class DocumentoEstudiante(BaseFileEntity):
 #     """
