@@ -7,6 +7,8 @@ from control_escolar.models import ModalidadesPrograma, TipoPrograma
 from rest_framework.response import Response
 from rest_framework import status
 from core.repositories import CampaniaRepositoryService
+from control_escolar.models import Campania
+from django.db.models import F
 # Create your views here.
 
 class ModalidadesView(APIView):
@@ -41,5 +43,17 @@ class CampaniaView(APIView):
     permission_classes = [IsAuthenticated, HasRoleWithRoles(['Administrador']), EsAutorORolPermitido]
 
     def get(self, request, *args, **kwargs):
-        campania = CampaniaRepositoryService.get_campania()
+        estudiante_id = request.query_params.get('e')
+        if not estudiante_id:
+            return Response({'detail': 'el identificador no viene en la URL'}, status=status.HTTP_400_BAD_REQUEST)
+
+        campania = Campania.objects.filter(
+            status=1,
+            programa__status=1
+        ).exclude(
+            inscripciones__estudiante__ref=estudiante_id
+        ).values('id', 'nombre')
+
+
+
         return Response(campania, status=status.HTTP_200_OK)

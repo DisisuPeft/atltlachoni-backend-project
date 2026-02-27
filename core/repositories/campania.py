@@ -9,6 +9,7 @@ class CampaniaRepositoryService:
                 SELECT c.id, pe.nombre as nombre 
                 FROM control_escolar_campania c
                 INNER JOIN control_escolar_programaeducativo pe on c.programa_id = pe.id
+                INNER JOIN control_escolar_inscripcion i on c.id = i.campania_id
                 WHERE c.status = 1
                 AND pe.status = 1
             """)

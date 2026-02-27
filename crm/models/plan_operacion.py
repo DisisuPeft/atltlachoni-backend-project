@@ -3,21 +3,29 @@ from common.models import BaseCRM, BaseFileEntity
 from django.conf import settings
 from core.utils.file_helpers import comprobante_validacion_path
 
-class PlanPago(BaseCRM):
-    lead = models.ForeignKey("crm.Lead", on_delete=models.CASCADE, related_name='planes_pago')
-    campania = models.ForeignKey('control_escolar.Campania', on_delete=models.PROTECT)
+class OrigenPago(BaseCRM):
+    nombre = models.CharField(max_length=50)
 
+class EstadoPlan(BaseCRM):
+    nombre = models.CharField(max_length=50)
+
+class PlanPago(BaseCRM):
+    lead = models.ForeignKey("crm.Lead", on_delete=models.CASCADE, related_name='planes_pago', null=True, blank=True)
+    campania = models.ForeignKey('control_escolar.Campania', on_delete=models.PROTECT, related_name='planes_pagos', null=True, blank=True)
+    origen = models.ForeignKey('crm.OrigenPago', on_delete=models.PROTECT, related_name="planes_origen", null=True, blank=True)
+    estudiante_existente = models.ForeignKey('user.EstudiantePerfil', on_delete=models.PROTECT, related_name='planes_estudiante_perfil', null=True, blank=True)
+    estado_plan = models.ForeignKey('crm.EstadoPlan', on_delete=models.PROTECT, related_name='planes_estado', null=True, blank=True)
     # Montos propuestos
-    inscripcion_propuesta = models.DecimalField(
+    inscripcion_monto = models.DecimalField(
         max_digits=10,
         decimal_places=2,
     )
-    mensualidad_propuesta = models.DecimalField(
+    mensualidad_monto = models.DecimalField(
         max_digits=10,
         decimal_places=2,
     )
     num_mensualidades = models.IntegerField()
-    documentacion_propuesta = models.DecimalField(
+    documentacion_monto = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         default=0
@@ -29,12 +37,6 @@ class PlanPago(BaseCRM):
     # Becas/Descuentos
     tiene_beca = models.BooleanField(default=False)
     tipo_beca = models.CharField(max_length=100, null=True, blank=True)
-    porcentaje_descuento = models.DecimalField(
-        max_digits=5,
-        decimal_places=2,
-        default=0
-    )
-
     # Auditoría
     creado_por = models.ForeignKey(
         settings.AUTH_USER_MODEL,
